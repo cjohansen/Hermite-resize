@@ -1,6 +1,6 @@
 {
     "name": "hermimg",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "Image resizing library",
     "main": "index.js",
     "scripts": {
