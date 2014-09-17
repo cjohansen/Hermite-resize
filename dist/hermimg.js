@@ -3,28 +3,28 @@
 //about: Fast image resize/resample using Hermite filter with JavaScript.
 //author: ViliusL
 //demo: http://viliusle.github.io/miniPaint/
-function resample(canvas, targetW, targetH) {
-  var w = canvas.width;
-  var h = canvas.height;
-  var w2 = Math.round(targetW);
-  var h2 = Math.round(targetH);
-  var img = canvas.getContext("2d").getImageData(0, 0, w, h);
-  var img2 = canvas.getContext("2d").getImageData(0, 0, w2, h2);
+function resample(canvas, width, height) {
+  var W = canvas.width;
+  var H = canvas.height;
+  var time1 = Date.now();
+  width = Math.round(width);
+  height = Math.round(height);
+  var img = canvas.getContext("2d").getImageData(0, 0, W, H);
+  var img2 = canvas.getContext("2d").getImageData(0, 0, width, height);
   var data = img.data;
   var data2 = img2.data;
-  var ratio_w = w / w2;
-  var ratio_h = h / h2;
+  var ratio_w = W / width;
+  var ratio_h = H / height;
   var ratio_w_half = Math.ceil(ratio_w/2);
   var ratio_h_half = Math.ceil(ratio_h/2);
 
-  for (var j = 0; j < h2; j++) {
-    for (var i = 0; i < w2; i++) {
-      var x2 = (i + j*w2) * 4;
+  for(var j = 0; j < height; j++){
+    for(var i = 0; i < width; i++){
+      var x2 = (i + j*width) * 4;
       var weight = 0;
       var weights = 0;
       var weights_alpha = 0;
-      var gx_r, gx_g, gx_b, gx_a;
-      gx_r = gx_g = gx_b = gx_a = 0;
+      var gx_r = 0, gx_g = 0, gx_b = 0, gx_a = 0;
       var center_y = (j + 0.5) * ratio_h;
       for(var yy = Math.floor(j * ratio_h); yy < (j + 1) * ratio_h; yy++){
         var dy = Math.abs(center_y - (yy + 0.5)) / ratio_h_half;
@@ -37,7 +37,7 @@ function resample(canvas, targetW, targetH) {
             //hermite filter
             weight = 2 * w*w*w - 3*w*w + 1;
             if(weight > 0){
-              dx = 4*(xx + yy * w);
+              dx = 4*(xx + yy*W);
               //alpha
               gx_a += weight * data[dx + 3];
               weights_alpha += weight;
@@ -62,11 +62,11 @@ function resample(canvas, targetW, targetH) {
   return img2;
 }
 
-function resizeTo(canvas, width, height) {
-  var resampledImageData = resample(canvas, canvas.width, canvas.height, width, height);
+function resizeTo(canvas, width, height){
+  var resampled = resample(canvas, width, height);
   canvas.width = width;
   canvas.height = height;
-  canvas.getContext("2d").putImageData(resampledImageData, 0, 0);
+  canvas.getContext("2d").putImageData(resampled, 0, 0);
 }
 
 function resizeWidth(canvas, width) {
