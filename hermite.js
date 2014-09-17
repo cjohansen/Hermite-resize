@@ -2,21 +2,23 @@
 //about: Fast image resize/resample using Hermite filter with JavaScript.
 //author: ViliusL
 //demo: http://viliusle.github.io/miniPaint/
-function resample_hermite(canvas, W, H, W2, H2){
-  W2 = Math.round(W2);
-  H2 = Math.round(H2);
-  var img = canvas.getContext("2d").getImageData(0, 0, W, H);
-  var img2 = canvas.getContext("2d").getImageData(0, 0, W2, H2);
+function resample(canvas, targetW, targetH) {
+  var w = canvas.width;
+  var h = canvas.height;
+  var w2 = Math.round(targetW);
+  var h2 = Math.round(targetH);
+  var img = canvas.getContext("2d").getImageData(0, 0, w, h);
+  var img2 = canvas.getContext("2d").getImageData(0, 0, w2, h2);
   var data = img.data;
   var data2 = img2.data;
-  var ratio_w = W / W2;
-  var ratio_h = H / H2;
+  var ratio_w = w / w2;
+  var ratio_h = h / h2;
   var ratio_w_half = Math.ceil(ratio_w/2);
   var ratio_h_half = Math.ceil(ratio_h/2);
 
-  for (var j = 0; j < H2; j++) {
-    for (var i = 0; i < W2; i++) {
-      var x2 = (i + j*W2) * 4;
+  for (var j = 0; j < h2; j++) {
+    for (var i = 0; i < w2; i++) {
+      var x2 = (i + j*w2) * 4;
       var weight = 0;
       var weights = 0;
       var weights_alpha = 0;
@@ -34,7 +36,7 @@ function resample_hermite(canvas, W, H, W2, H2){
             //hermite filter
             weight = 2 * w*w*w - 3*w*w + 1;
             if(weight > 0){
-              dx = 4*(xx + yy*W);
+              dx = 4*(xx + yy * w);
               //alpha
               gx_a += weight * data[dx + 3];
               weights_alpha += weight;
@@ -55,8 +57,29 @@ function resample_hermite(canvas, W, H, W2, H2){
       data2[x2 + 3] = gx_a / weights_alpha;
     }
   }
-  canvas.getContext("2d").clearRect(0, 0, Math.max(W, W2), Math.max(H, H2));
-  canvas.width = W2;
-  canvas.height = H2;
-  canvas.getContext("2d").putImageData(img2, 0, 0);
+
+  return img2;
 }
+
+function resizeTo(canvas, width, height) {
+  var resampledImageData = resample(canvas, canvas.width, canvas.height, width, height);
+  canvas.width = width;
+  canvas.height = height;
+  canvas.getContext("2d").putImageData(resampledImageData, 0, 0);
+}
+
+function resizeWidth(canvas, width) {
+  return resizeTo(canvas, width, canvas.height * (width / canvas.width));
+}
+
+function scale(canvas, wScale, hScale) {
+  hScale = hScale || wScale;
+  return resizeTo(canvas, canvas.width * wScale, canvas.height * hScale);
+}
+
+module.exports = {
+  resample: resample,
+  resizeTo: resizeTo,
+  resizeWidth: resizeWidth,
+  scale: scale
+};
