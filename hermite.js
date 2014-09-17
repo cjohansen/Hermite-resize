@@ -3,7 +3,6 @@
 //author: ViliusL
 //demo: http://viliusle.github.io/miniPaint/
 function resample_hermite(canvas, W, H, W2, H2){
-  var time1 = Date.now();
   W2 = Math.round(W2);
   H2 = Math.round(H2);
   var img = canvas.getContext("2d").getImageData(0, 0, W, H);
@@ -56,7 +55,6 @@ function resample_hermite(canvas, W, H, W2, H2){
       data2[x2 + 3] = gx_a / weights_alpha;
     }
   }
-  console.log("hermite = "+(Math.round(Date.now() - time1)/1000)+" s");
   canvas.getContext("2d").clearRect(0, 0, Math.max(W, W2), Math.max(H, H2));
   canvas.width = W2;
   canvas.height = H2;
