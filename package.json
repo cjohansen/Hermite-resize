@@ -1,14 +1,15 @@
 {
     "name": "hermimg",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "description": "Image resizing library",
-    "main": "index.js",
+    "main": "hermite.js",
     "scripts": {
         "pre-test": "./build-dependencies.sh",
         "test": "./node_modules/karma/bin/karma start karma.conf.js",
         "build": "./node_modules/.bin/browserify -s hermimg -o dist/hermimg.js hermite.js"
     },
     "author": "ViliusL (adapted by Christian Johansen)",
+    "repository": "cjohansen/Hermite-resize",
     "license": "ISC",
     "devDependencies": {
         "browserify": "^5.11.1"
