@@ -1,8 +1,8 @@
 {
     "name": "hermimg",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Image resizing library",
-    "main": "index.js",
+    "main": "hermite.js",
     "scripts": {
         "pre-test": "./build-dependencies.sh",
         "test": "./node_modules/karma/bin/karma start karma.conf.js",
